@@ -1,0 +1,54 @@
+﻿@model VoxTenouApp.Models.SportEvent.SubmitEditSportEventDto;
+@{
+
+}
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Enable Live Search.
+            $('#organizerId').attr('data-live-search', true);
+
+            $('.selectOrganizer').selectpicker(
+                {
+                    width: '100%',
+                    title: '- [Choose Country] -',
+                    style: 'btn-light',
+                    size: 6
+                });
+        });
+    </script>
+}
+<div class="row d-flex justify-content-center">
+    <div class="col-md-6">
+        <div class="card px-5 py-5">
+            @using (Html.BeginForm("Edit", "SportEvent", method: FormMethod.Post, new { Id = Model.id }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-floating mb-3">
+                    @Html.EditorFor(s=>s.eventDate,new {htmlAttributes = new {@class="form-control",@type="date",@placeholder="Event Date"} })
+                    @Html.ValidationMessageFor(m => m.eventDate, "",new {@class="text-danger" })
+                    <label for="text">Event Date</label>
+                </div>
+                <div class="form-floating mb-3">
+                    @Html.EditorFor(s=>s.eventName,new {htmlAttributes = new {@class="form-control",@type="text",@placeholder="Event Name"} })
+                    @Html.ValidationMessageFor(m => m.eventName, "",new {@class="text-danger" })
+                    <label for="text">Event Name</label>
+                </div>
+                <div class="form-floating mb-3">
+                    @Html.EditorFor(s=>s.eventType,new {htmlAttributes = new {@class="form-control",@type="text",@placeholder="Event Type"} })
+                    <label for="text">Event Type</label>
+                    @Html.ValidationMessageFor(m => m.eventType, "",new {@class="text-danger" })
+                </div>
+                <div class="form-group mb-3">
+                    @Html.DropDownListFor(m => m.organizerId,
+                this.ViewBag.ListOrganizer as SelectList, new { id = "organizerId", @class = "selectOrganizer show-tick form-control" })
+                    @Html.ValidationMessageFor(m => m.organizerId, "",new {@class="text-danger" })
+                </div>
+                <div class="text-center mb-3">
+                    <button type="submit" value="submit" class="btn btn-primary" style="width:100%">Submit</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>

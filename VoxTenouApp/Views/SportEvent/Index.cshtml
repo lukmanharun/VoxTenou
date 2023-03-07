@@ -1,0 +1,94 @@
+﻿@model VoxTenouApp.Models.ResponseApiPagination<VoxTenouApp.Models.SportEvent.GridSportEvent>;
+@{
+    ViewData["Title"] = "Sport-Event";
+}
+@section Scripts
+    {
+    <script type="text/javascript">
+        function PagerClick(index) {
+            document.getElementById("IndexSportEvent").value = index;
+            document.forms[0].submit();
+        }
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.delete-prompt').click(function () {
+                var confirmMessageBox = confirm('Are you sure you wish to delete this record ?'); if (confirmMessageBox) {
+                    var pryEmpId = $(this).attr('id');
+                    if (pryEmpId != '') {
+                        $.ajax({
+                            url: '/SportEvent/Delete/' + pryEmpId,
+                            type: 'POST',
+                            success: function (data) {
+                                if (data != null && data.success == true) {
+                                    window.location.href = '/SportEvent/Index';
+                                }
+                                else if (data != null && data.success == false) {
+                                    alert('record deleted failure');
+                                }
+                            }, error: function (err) {
+                                alert(err.statusText);
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+}
+<div>
+    @using (Html.BeginForm("Index", "SportEvent", FormMethod.Post))
+    {
+        <table class="table table-hover" cellpadding="0" cellspacing="0">
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-8"><h2>SportEvent</h2></div>
+                    <div class="col-sm-4">
+                        <a type="button" href="/SportEvent/AddNew" class="btn btn-info add-new"><i class="fa fa-plus"></i>Add New</a>
+                    </div>
+                </div>
+            </div>
+            <tr>
+                <th scope="col">Event Date</th>
+                <th scope="col">Event Name</th>
+                <th scope="col">Event Type</th>
+                <th scope="col">Organizer</th>
+                <th scope="col">Action</th>
+            </tr>
+            @foreach (var item in Model.data)
+            {
+                <tr>
+                    <td>@item.eventDate</td>
+                    <td>@item.eventName</td>
+                    <td>@item.eventType</td>
+                    <td>@item.organizer.organizerName</td>
+                    <td>
+                        <a href="/SportEvent/Edit/@item.id" class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">edit</i></a>
+                        <a href="javascript:void(0)" id="@item.id" class="delete-prompt" title="Delete" data-toggle="tooltip"><i class="material-icons">delete</i></a>
+                    </td>
+                </tr>
+            }
+        </table>
+        <br />
+        <nav aria-label="...">
+            <ul class="pagination">
+                @for (int i = 1; i <= Model.meta.pagination.total_pages; i++)
+                {
+                    @if (i != Model.meta.pagination.current_page)
+                    {
+                        <li class="page-item">
+                            <a class="page-link pagination-click" id="@i" href="/SportEvent/Index/@i">@i</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item active" aria-current="page">
+                            <a class="page-link pagination-click" id="@i" href="/SportEvent/Index/@i">@i</a>
+                        </li>
+                    }
+                }
+            </ul>
+        </nav>
+        <input type="hidden" id="IndexSportEvent" name="currentPageIndex" />
+    }
+</div>

@@ -1,0 +1,80 @@
+﻿@model VoxTenouApp.Models.ResponseApiPagination<VoxTenouApp.Models.Organizer.GridOrganizer>;
+@{
+    ViewData["Title"] = "Organizer";
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.delete-prompt').click(function () {
+                var confirmMessageBox = confirm('Are you sure you wish to delete this record ?'); if (confirmMessageBox) {
+                    var pryEmpId = $(this).attr('id');
+                    if (pryEmpId != '') {
+                        $.ajax({
+                            url: '/Organizer/Delete/' + pryEmpId,
+                            type: 'POST',
+                            success: function (data) {
+                                if (data!=null && data.success == true) {
+                                    window.location.href = '/Organizer/Index';
+                                }
+                                else if (data != null && data.success == false) {
+                                    alert('record deleted failure');
+                                }
+                            }, error: function (err) {
+                                alert(err.statusText);
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+}
+<div>
+    <table class="table table-hover" cellpadding="0" cellspacing="0">
+        <div class="table-title">
+            <div class="row">
+                <div class="col-sm-8"><h2>Organizers</h2></div>
+                <div class="col-sm-4">
+                    <a type="button" href="/Organizer/AddNew" class="btn btn-info add-new"><i class="fa fa-plus"></i>Add New</a>
+                </div>
+            </div>
+        </div>
+        <tr>
+            <th scope="col">Organizer Name</th>
+            <th scope="col">Image Location</th>
+            <th scope="col">Action</th>
+        </tr>
+        @foreach (var item in Model.data)
+        {
+            <tr>
+                <td>@item.organizerName</td>
+                <td><img src="@item.imageLocation" alt="alternatetext" style="width:60px;height:60px;"></td>
+                <td>
+                    <a href="/Organizer/Edit/@item.id" class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">edit</i></a>
+                    <a href="javascript:void(0)" id="@item.id" class="delete-prompt" title="Delete" data-toggle="tooltip"><i class="material-icons">delete</i></a>
+                </td>
+            </tr>
+        }
+    </table>
+    <br />
+    <nav aria-label="...">
+        <ul class="pagination">
+            @for (int i = 1; i <= Model.meta.pagination.total_pages; i++)
+            {
+                @if (i != Model.meta.pagination.current_page)
+                {
+                    <li class="page-item">
+                        <a class="page-link pagination-click" id="@i" href="/Organizer/Index/@i">@i</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item active" aria-current="page">
+                        <a class="page-link pagination-click" id="@i" href="/Organizer/Index/@i">@i</a>
+                    </li>
+                }
+            }
+        </ul>
+    </nav>
+</div>

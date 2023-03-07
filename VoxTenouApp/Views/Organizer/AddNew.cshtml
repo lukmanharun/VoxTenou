@@ -1,0 +1,27 @@
+﻿@model VoxTenouApp.Models.Organizer.OrganizerFormDto;
+@{
+}
+
+<div class="row d-flex justify-content-center">
+    <div class="col-md-6">
+        <div class="card px-5 py-5">
+            @using (Html.BeginForm("AddNew", "Organizer", HttpMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-floating mb-3">
+                    @Html.EditorFor(s=>s.organizerName,new {htmlAttributes = new {@class="form-control",@type="text",@placeholder="Organizer Name"} })
+                    <label for="text">Organizer Name</label>
+                    @Html.ValidationMessageFor(m => m.organizerName, "",new {@class="text-danger" })
+                </div>
+                <div class="form-floating mb-3">
+                    @Html.EditorFor(s=>s.imageLocation,new {htmlAttributes = new {@class="form-control",@type="text",@placeholder="Organizer Name"} })
+                    <label for="text">Organizer Name</label>
+                    @Html.ValidationMessageFor(m => m.imageLocation, "",new {@class="text-danger" })
+                </div>
+                <div class="text-center mb-3">
+                    <button type="submit" value="submit" class="btn btn-primary" style="width:100%">Submit</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
